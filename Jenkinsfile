@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                
-                git url : 'https://github.com/DELTA-swe/devops-setup.git', branch: 'main'
+                // Checkout code using credentials stored in Jenkins
+                git credentialsId: 'github_pat', url: 'https://github.com/DELTA-swe/devops-setup.git'
             }
         }
     }
