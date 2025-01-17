@@ -15,3 +15,7 @@ utils/__pycache__/
 tests/__pycache__/
 .vscode/
 .pytest_cache/
+
+.scannerwork/
+.coverage
+coverage.xml
