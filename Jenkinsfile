@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'maven:3.8.4-openjdk-11' }
+    }
 
     environment {
         FRONTEND_IMAGE = "calcFrontend:latest"
@@ -12,19 +14,6 @@ pipeline {
             steps {
                 // Checkout code using credentials stored in Jenkins
                 git credentialsId: 'github_pat', url: 'https://github.com/DELTA-swe/devops-setup.git', branch: 'main'
-            }
-        }
-
-        stage('Install Maven') {
-            steps {
-                script {
-                    // Install Maven if not already installed
-                    sh """
-                    apt-get update
-                    apt-get install -y sudo
-                    apt-get install -y maven
-                    """
-                }
             }
         }
 
