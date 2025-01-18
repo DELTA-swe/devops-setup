@@ -8,18 +8,6 @@ pipeline {
         ARTIFACTORY_URL = "http://localhost:8082/artifactory/calcacr/"
     }
     stages {
-        // stage('Build') {
-        //     agent {
-        //         dockerContainer {
-        //             image 'maven:3.8.4-openjdk-11'
-        //         }
-        //     }
-        //     steps {
-        //         sh 'mvn clean install'
-                
-        //     }
-        // }
-
         stage('Checkout') {
             steps {
                 // Checkout code using credentials stored in Jenkins
