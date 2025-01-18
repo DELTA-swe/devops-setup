@@ -15,15 +15,17 @@ pipeline {
             }
         }
 
-        stage ('Sonarqube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 script {
-                    sh """
-                    mvn clean verify sonar:sonar \
-                    -Dsonar.projectKey=calc-dev \
-                    -Dsonar.host.url=${SONAR_HOST_URL} \
-                    -Dsonar.login=${SONARQUBE_TOKEN}
-                    """
+                    withCredentials([string(credentialsId: 'sonar-id', variable: 'SONARQUBE_TOKEN')]) {
+                        sh """
+                        mvn clean verify sonar:sonar \
+                        -Dsonar.projectKey=calc-dev \
+                        -Dsonar.host.url=${SONAR_HOST_URL} \
+                        -Dsonar.login=${SONARQUBE_TOKEN}
+                        """
+                    }
                 }
             }
         }
