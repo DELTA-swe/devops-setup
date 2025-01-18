@@ -6,8 +6,6 @@ pipeline {
         BACKEND_IMAGE = "calcBackend:latest"
         SONAR_HOST_URL = "http://localhost:9000"
         ARTIFACTORY_URL = "http://localhost:8082/artifactory/calcacr/"
-        JFROG_USERNAME = credentials('jfrog-credentials').username
-        JFROG_PASSWORD = credentials('jfrog-credentials').password
     }
     stages {
         stage('Checkout') {
@@ -49,16 +47,17 @@ pipeline {
         stage('Push Docker Images to JFrog Artifactory') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'jfrog-credentials', passwordVariable: 'JFROG_PASSWORD', usernameVariable: 'JFROG_USERNAME')]) 
-                    // Login to JFrog Artifactory
-                    sh """
-                    echo "${JFROG_PASSWORD}" | docker login ${ARTIFACTORY_URL} -u ${JFROG_USERNAME} --password-stdin
-                    """
-                    // Push images to JFrog Artifactory
-                    sh "docker tag ${FRONTEND_IMAGE} ${ARTIFACTORY_URL}/myrepo/${FRONTEND_IMAGE}"
-                    sh "docker tag ${BACKEND_IMAGE} ${ARTIFACTORY_URL}/myrepo/${BACKEND_IMAGE}"
-                    sh "docker push ${ARTIFACTORY_URL}/myrepo/${FRONTEND_IMAGE}"
-                    sh "docker push ${ARTIFACTORY_URL}/myrepo/${BACKEND_IMAGE}"
+                    withCredentials([usernamePassword(credentialsId: 'jfrog-credentials', passwordVariable: 'JFROG_PASSWORD', usernameVariable: 'JFROG_USERNAME')]) {
+                        // Login to JFrog Artifactory
+                        sh """
+                        echo "${JFROG_PASSWORD}" | docker login ${ARTIFACTORY_URL} -u ${JFROG_USERNAME} --password-stdin
+                        """
+                        // Push images to JFrog Artifactory
+                        sh "docker tag ${FRONTEND_IMAGE} ${ARTIFACTORY_URL}/myrepo/${FRONTEND_IMAGE}"
+                        sh "docker tag ${BACKEND_IMAGE} ${ARTIFACTORY_URL}/myrepo/${BACKEND_IMAGE}"
+                        sh "docker push ${ARTIFACTORY_URL}/myrepo/${FRONTEND_IMAGE}"
+                        sh "docker push ${ARTIFACTORY_URL}/myrepo/${BACKEND_IMAGE}"
+                    }
                 }
             }
         }
