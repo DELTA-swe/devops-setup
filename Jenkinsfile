@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.8.4-jdk-11' // This uses Maven with JDK 11
-            args '-v /tmp:/tmp' // Optional: mount any required volume
-        }
-    }
+    agent any
 
     environment {
         FRONTEND_IMAGE = "calcFrontend:latest"
@@ -34,6 +29,19 @@ pipeline {
                 }
             }
         }
+
+        stage('Install Maven') {
+            steps {
+                script {
+                    // Install Maven if not already installed
+                    sh """
+                    sudo apt-get update
+                    sudo apt-get install -y maven
+                    """
+                }
+            }
+        }
+        
         stage('Build Backend Docker Image') {
             steps {
                 script {
