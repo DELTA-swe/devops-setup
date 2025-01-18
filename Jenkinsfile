@@ -49,6 +49,7 @@ pipeline {
         stage('Push Docker Images to JFrog Artifactory') {
             steps {
                 script {
+                    withCredentials([usernamePassword(credentialsId: 'jfrog-credentials', passwordVariable: 'JFROG_PASSWORD', usernameVariable: 'JFROG_USERNAME')]) 
                     // Login to JFrog Artifactory
                     sh """
                     echo "${JFROG_PASSWORD}" | docker login ${ARTIFACTORY_URL} -u ${JFROG_USERNAME} --password-stdin
