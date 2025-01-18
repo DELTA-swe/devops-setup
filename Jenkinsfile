@@ -20,8 +20,9 @@ pipeline {
                 script {
                     // Install Maven if not already installed
                     sh """
-                    apt-get update
-                    apt-get install -y maven
+                    apt-get install sudo
+                    sudo apt-get update
+                    sudo apt-get install -y maven
                     """
                 }
             }
