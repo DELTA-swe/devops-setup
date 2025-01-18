@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.8.4-jdk-11' // This uses Maven with JDK 11
+            args '-v /tmp:/tmp' // Optional: mount any required volume
+        }
+    }
 
     environment {
         FRONTEND_IMAGE = "calcFrontend:latest"
