@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'maven:3.8.4-openjdk-11' }
-    }
+    agent any
 
     environment {
         FRONTEND_IMAGE = "calcFrontend:latest"
@@ -10,6 +8,17 @@ pipeline {
         ARTIFACTORY_URL = "http://localhost:8082/artifactory/calcacr/"
     }
     stages {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'maven:3.8.4-openjdk-11'
+                }
+            }
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
         stage('Checkout') {
             steps {
                 // Checkout code using credentials stored in Jenkins
