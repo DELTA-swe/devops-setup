@@ -14,14 +14,14 @@ pipeline {
                 git credentialsId: 'github_pat', url: 'https://github.com/DELTA-swe/devops-setup.git', branch: 'main'
             }
         }
-        
+
         stage('Install Maven') {
             steps {
                 script {
                     // Install Maven if not already installed
                     sh """
-                    sudo apt-get update
-                    sudo apt-get install -y maven
+                    apt-get update
+                    apt-get install -y maven
                     """
                 }
             }
