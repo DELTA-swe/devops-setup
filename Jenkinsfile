@@ -8,17 +8,17 @@ pipeline {
         ARTIFACTORY_URL = "http://localhost:8082/artifactory/calcacr/"
     }
     stages {
-        stage('Build') {
-            agent {
-                dockerContainer {
-                    image 'maven:3.8.4-openjdk-11'
-                }
-            }
-            steps {
-                sh 'mvn clean install'
+        // stage('Build') {
+        //     agent {
+        //         dockerContainer {
+        //             image 'maven:3.8.4-openjdk-11'
+        //         }
+        //     }
+        //     steps {
+        //         sh 'mvn clean install'
                 
-            }
-        }
+        //     }
+        // }
 
         stage('Checkout') {
             steps {
@@ -27,20 +27,20 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube Code Analysis') {
             steps {
+                dir("${WORKSPACE}"){
+                // Run SonarQube analysis for Python
                 script {
-                    withCredentials([string(credentialsId: 'sonar-id', variable: 'SONARQUBE_TOKEN')]) {
-                        sh """
-                        mvn clean verify sonar:sonar \
-                        -Dsonar.projectKey=calc-dev \
-                        -Dsonar.host.url=${SONAR_HOST_URL} \
-                        -Dsonar.login=${SONARQUBE_TOKEN}
-                        """
+                    def scannerHome = tool name: 'scanner-name', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    withSonarQubeEnv('SonarqubeScanner') {
+                        sh "echo $pwd"
+                        sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
             }
-        }
+            }
+       }
 
         
 
