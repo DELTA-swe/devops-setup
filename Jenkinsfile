@@ -22,7 +22,7 @@ pipeline {
                 script {
                     def scannerHome = tool name: 'scanner-name', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                     withSonarQubeEnv('SonarqubeScanner') {
-                        sh "echo $pwd"
+                        // sh "echo $pwd"
                         sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
