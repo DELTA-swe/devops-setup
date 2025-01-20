@@ -4,8 +4,8 @@ pipeline {
     environment {
         FRONTEND_IMAGE = "calcFrontend:latest"
         BACKEND_IMAGE = "calcBackend:latest"
-        SONAR_HOST_URL = "http://localhost:9000"
-        ARTIFACTORY_URL = "http://localhost:8082/artifactory/calcacr/"
+        SONARQUBE_SERVER = 'MySonarServer' // Name of your SonarQube server in Jenkins
+        SCANNER_HOME = tool 'SonarScanner' // Name of your SonarQube Scanner tool in Jenkins
     }
     stages {
         stage('Checkout') {
@@ -15,56 +15,24 @@ pipeline {
             }
         }
 
-        stage('SonarQube Code Analysis') {
-            steps {
-                dir("${WORKSPACE}"){
-                // Run SonarQube analysis for Python
-                script {
-                    def scannerHome = tool name: 'scanner-name', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    withSonarQubeEnv('SonarqubeScanner') {
-                        // sh "echo $pwd"
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
-                }
-            }
-            }
-       }
-
-        
-
-        stage('Build Backend Docker Image') {
+        stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Build the backend Docker image
-                    sh "docker build -t ${BACKEND_IMAGE} ."
-                }
-            }
-        }
-
-        stage('Build Frontend Docker Image') {
-            steps {
-                script {
-                    // Build the frontend Docker image
-                    sh "docker build -t ${FRONTEND_IMAGE} ./frontend"
-                }
-            }
-        }
-        stage('Push Docker Images to JFrog Artifactory') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'jfrog-credentials', passwordVariable: 'JFROG_PASSWORD', usernameVariable: 'JFROG_USERNAME')]) {
-                        // Login to JFrog Artifactory
+                    withSonarQubeEnv('MySonarServer') { // Matches the name in SonarQube Servers configuration
                         sh """
-                        echo "${JFROG_PASSWORD}" | docker login ${ARTIFACTORY_URL} -u ${JFROG_USERNAME} --password-stdin
+                        ${SCANNER_HOME}/bin/sonar-scanner \
+                            -Dsonar.projectKey=calc-dev \
+                            -Dsonar.sources=. \
+                            -Dsonar.language=py \
+                            -Dsonar.python.version=3.13 \
+                            -Dsonar.host.url=http://localhost:9000 \
+                            -Dsonar.login=sqp_328bbeb4d27f839f33c9aeca4 \
+                            -Dsonar.python.coverage.reportPaths=./coverage.xml \
+                            -Dsonar.exclusions=**/tests/**,coverage.xml
                         """
-                        // Push images to JFrog Artifactory
-                        sh "docker tag ${FRONTEND_IMAGE} ${ARTIFACTORY_URL}/myrepo/${FRONTEND_IMAGE}"
-                        sh "docker tag ${BACKEND_IMAGE} ${ARTIFACTORY_URL}/myrepo/${BACKEND_IMAGE}"
-                        sh "docker push ${ARTIFACTORY_URL}/myrepo/${FRONTEND_IMAGE}"
-                        sh "docker push ${ARTIFACTORY_URL}/myrepo/${BACKEND_IMAGE}"
                     }
                 }
             }
-        }
+        }       
     }
 }
