@@ -14,6 +14,14 @@ pipeline {
                 git credentialsId: 'github_pat', url: 'https://github.com/DELTA-swe/devops-setup.git', branch: 'main'
             }
         }
+        stage('Install Node.js') {
+            steps {
+                sh '''
+                curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+                apt-get install -y nodejs
+                '''
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
