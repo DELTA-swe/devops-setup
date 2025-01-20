@@ -6,7 +6,7 @@ pipeline {
         BACKEND_IMAGE = "calcbackend:latest"
         SONARQUBE_SERVER = 'MySonarServer' // Name of your SonarQube server in Jenkins
         SCANNER_HOME = tool 'SonarScanner' // Name of your SonarQube Scanner tool in Jenkins
-        DOCKER_REGISTRY = 'localhost:8082/artifactory/calcacr'
+        DOCKER_REGISTRY = 'artifactory-jcr:8082/artifactory/calcacr'
         ARTIFACTORY_USERNAME = credentials('jfrog-id')
         ARTIFACTORY_PASSWORD = credentials('jfrog-id')
     }
