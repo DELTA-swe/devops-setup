@@ -6,7 +6,9 @@ pipeline {
         BACKEND_IMAGE = "calcBackend:latest"
         SONARQUBE_SERVER = 'MySonarServer' // Name of your SonarQube server in Jenkins
         SCANNER_HOME = tool 'SonarScanner' // Name of your SonarQube Scanner tool in Jenkins
-        DOCKER_REGISTRY = 'http://localhost:8082/artifactory/calcacr'
+        DOCKER_REGISTRY = 'localhost:8082/artifactory/calcacr'
+        ARTIFACTORY_USERNAME = credentials('jfrog-id')
+        ARTIFACTORY_PASSWORD = credentials('jfrog-id')
     }
     stages {
         stage('Checkout') {
@@ -53,13 +55,10 @@ pipeline {
         stage('Push Docker Images to JFrog') {
             steps {
                 script {
-                    // Retrieve JFrog credentials
-                    def artifactoryUsername = credentials('jfrog-id').getUsername()
-                    def artifactoryPassword = credentials('jfrog-id').getPassword()
-
+                    
                     // Authenticate Docker with JFrog Artifactory
                     sh """
-                    echo "${artifactoryPassword}" | docker login ${DOCKER_REGISTRY} -u "${artifactoryUsername}" --password-stdin
+                    echo "${ARTIFACTORY_PASSWORD}" | docker login ${DOCKER_REGISTRY} -u "${ARTIFACTORY_USERNAME}" --password-stdin
                     """
 
                     // Push frontend image to JFrog Artifactory
