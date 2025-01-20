@@ -28,15 +28,7 @@ pipeline {
                 script {
                     withSonarQubeEnv('MySonarServer') { // Matches the name in SonarQube Servers configuration
                         sh """
-                        ${SCANNER_HOME}/bin/sonar-scanner \
-                            -Dsonar.projectKey=calc-dev \
-                            -Dsonar.sources=. \
-                            -Dsonar.language=py \
-                            -Dsonar.python.version=3.13 \
-                            -Dsonar.host.url=http://sonarqube-cont:9000 \
-                            -Dsonar.login=sqp_328bbeb4d27f8ef97b9864e9aed339f33c9aeca4 \
-                            -Dsonar.python.coverage.reportPaths=./coverage.xml \
-                            -Dsonar.exclusions=**/tests/**,coverage.xml
+                        ${SCANNER_HOME}/bin/sonar-scanner
                         """
                     }
                 }
