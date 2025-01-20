@@ -15,7 +15,7 @@ pipeline {
             steps {
                 sh ' echo "Checking out code from GitHub"'
                 sh 'echo "Fetching latest code from repository"'
-                git credentialsId: 'github_pat', url: 'https://github.com/DELTA-swe/devops-setup.git', branch: 'main'
+                git credentialsId: 'github-pat', url: 'https://github.com/DELTA-swe/devops-setup.git', branch: 'main'
                 sh 'echo "Code checked out successfully"'
             }
         }
