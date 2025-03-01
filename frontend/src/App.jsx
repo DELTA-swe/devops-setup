@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Calc from '/pages/Calc.jsx';
+import Calc from './pages/Calc.jsx';
 
 /**
  * The App component sets up the main application router using BrowserRouter.
